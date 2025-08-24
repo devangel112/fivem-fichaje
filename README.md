@@ -7,30 +7,52 @@ First, run the development server:
 ```bash
 npm run dev
 # or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# Fichajes BPT
+
+Sistema de fichajes con Next.js 15, NextAuth (Discord), Prisma y API para FiveM.
+
+## Características
+- Login con Discord (NextAuth v4)
+- Roles: Empleado, Encargado, Dueño
+- Registro de fichajes (IN/OUT)
+- Webhook a Discord
+- Dashboard básico de productividad
+- API para integración con FiveM
+
+## Configuración
+1. Copia `.env.local.example` a `.env.local` y completa:
+```
+DATABASE_URL="file:./dev.db"
+AUTH_DISCORD_ID="..."
+AUTH_DISCORD_SECRET="..."
+AUTH_SECRET="..."
+DISCORD_WEBHOOK_URL="..." # opcional
+FIVEM_API_KEY="..."      # opcional
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Genera Prisma y base de datos (SQLite por defecto):
+```
+npm run prisma:generate
+npm run db:push
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Ejecuta en desarrollo:
+```
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Endpoints
+- Auth: `/api/auth/[...nextauth]`
+- Fichajes (usuario autenticado):
+	- `POST /api/clock` { type: "IN" | "OUT", note? }
+	- `GET /api/clock` últimos fichajes del usuario
+- FiveM: `POST /api/fivem` con header `x-api-key` y body `{ discordId, type, note? }`
 
-## Learn More
+## Páginas
+- `/login` Iniciar sesión con Discord
+- `/dashboard` Dashboard del usuario
+- `/clock` Página simple para marcar IN/OUT
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Notas
+- El rol por defecto es `EMPLEADO`. Puedes actualizar roles en la tabla `User`.
+- Para usar otra base de datos, cambia `provider` y `DATABASE_URL` en `prisma/schema.prisma`.

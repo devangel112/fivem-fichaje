@@ -1,0 +1,14 @@
+node_modules
+.next
+.git
+.vscode
+npm-debug.log*
+Dockerfile
+docker-compose.yml
+*.local
+.env
+coverage
+dist
+.prisma
+# Opcional: ignora archivos subidos locales en el build
+# public/uploads
